@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "742189811367",
+    "firebase_url": "https://elvalecliente-default-rtdb.firebaseio.com",
+    "project_id": "elvalecliente",
+    "storage_bucket": "elvalecliente.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742189811367:android:4db76b5692149288aa3d82",
+        "android_client_info": {
+          "package_name": "com.elvale.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742189811367-ga70ueeu9h19re5km5spb0385naeh8mm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlx5MOsJH3D21G5BNd_LN0mnJAjY3Ii54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742189811367-ga70ueeu9h19re5km5spb0385naeh8mm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "742189811367-k4cbt7nthoc7hrln0ik4mis4qlo6a5se.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.elvale.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
