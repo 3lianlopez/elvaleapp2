@@ -56,7 +56,7 @@ class UsuarioProvider with ChangeNotifier {
     print(jsonBody);
     // Realizar la petición POST
     final response = await http.post(
-      Uri.parse('http://192.168.1.101:8085/establecimiento'), // Asegúrate de que esta URL es correcta
+      Uri.parse('http://192.168.1.109:8085/establecimiento'), // Asegúrate de que esta URL es correcta
       headers: {
         'Content-Type': 'application/json',
       },

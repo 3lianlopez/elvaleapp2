@@ -1,4 +1,5 @@
-/*import 'package:elvale/establecimiento/models/establecimiento_model.dart';
+import 'package:elvale/establecimiento/models/establecimiento_model.dart';
+import 'package:elvale/shared/screens/usuario_google.dart';
 import 'package:elvale/usuario/models/usuario_new_model.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,9 @@ import 'dart:convert';
 
 
 class UsuarioNuevoScreen extends StatefulWidget {
-  const UsuarioNuevoScreen({super.key});
+  final int codeResponse;
+
+  const UsuarioNuevoScreen({super.key, required this.codeResponse });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -15,6 +18,30 @@ class UsuarioNuevoScreen extends StatefulWidget {
 }
 
 class _UsuarioNuevoScreenState extends State<UsuarioNuevoScreen> {
+  
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Formulario Establecimiento'),
+      ),
+      body: widget.codeResponse == 200 ? UsuarioCorreo() : UsuarioGoogle()
+    );
+  }
+}
+
+
+
+class UsuarioCorreo extends StatefulWidget {
+  const UsuarioCorreo({super.key});
+
+  @override
+  State<UsuarioCorreo> createState() => _UsuarioCorreoState();
+}
+
+class _UsuarioCorreoState extends State<UsuarioCorreo> {
+
   // Controladores para los campos del formulario
   final TextEditingController nitController = TextEditingController();
   final TextEditingController razonSocialController = TextEditingController();
@@ -107,11 +134,7 @@ class _UsuarioNuevoScreenState extends State<UsuarioNuevoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Formulario Establecimiento'),
-      ),
-      body: Padding(
+    return Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Form(
@@ -187,8 +210,8 @@ class _UsuarioNuevoScreenState extends State<UsuarioNuevoScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
-*/
+
+

@@ -12,7 +12,7 @@ abstract class ApiPetition {
 
 static Future<UsuarioSecurityModel?> fetchUsuarioById(String id) async {
   //id = "tiaoS2g1btVwMXJzlrYRHjZ72tV1";
-  final url = Uri.parse('http://192.168.1.101:8085/usuario/id/$id');
+  final url = Uri.parse('http://192.168.1.109:8085/usuario/id/$id');
   // ignore: avoid_print
   print(url);
   try {
@@ -54,7 +54,7 @@ static Future<UsuarioSecurityModel?> fetchUsuarioById(String id) async {
 
 
 static Future<void> crearEstablecimiento(EstablecimientoModel empresa) async {
-  final url = Uri.parse('http://192.168.1.101:8085/establecimiento'); // Reemplaza con la URL de tu API
+  final url = Uri.parse('http://192.168.1.109:8085/establecimiento'); // Reemplaza con la URL de tu API
 
   try {
     // Convertir el objeto Empresa a JSON
