@@ -1,8 +1,6 @@
-import 'package:elvale/establecimiento/establecimiento.dart';
 import 'package:elvale/establecimiento/provider/establacimiento_provider.dart';
 import 'package:elvale/routes/routes.dart';
 import 'package:elvale/security/screens/login.dart';
-import 'package:elvale/usuario/provider/usuario_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +21,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EstablecimientoProvider()),
-        ChangeNotifierProvider(create: (_) => UsuarioProvider()) 
+        //ChangeNotifierProvider(create: (_) => UsuarioProvider()) 
       ],
       child: const MyApp(),
       );

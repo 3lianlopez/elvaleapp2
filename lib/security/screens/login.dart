@@ -1,4 +1,7 @@
-import 'package:elvale/establecimiento/establecimiento.dart';
+import 'package:elvale/security/models/usuario_security_model.dart';
+import 'package:elvale/shared/api/api_petition.dart';
+import 'package:elvale/usuario/screens/usuario_nuevo_screen.dart';
+import 'package:elvale/usuario/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  String uid ='';
 
   String? _errorMessage;
 
@@ -25,18 +29,28 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text,
       );
 
-      String uid = userCredential.user?.uid ?? 'NO UID FOUND';
-      print('UID ELIAN::: ' +  uid);
+
+      uid = userCredential.user?.uid ?? 'NO UID FOUND';
+      UsuarioSecurityModel? usuario = await ApiPetition.fetchUsuarioById(uid);
+      // ignore: avoid_print, prefer_interpolation_to_compose_strings
       // Si la autenticación es exitosa, navega a la pantalla principal
-      if (userCredential.user != null) {
+      if (userCredential.user != null && ApiPetition.codeResponse == 200) {
+        // ignore: avoid_print, prefer_interpolation_to_compose_strings//print("entro " + usuario!.nombres.toString());
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => EstablecimientoScreen()),
+          MaterialPageRoute(builder: (context) => UsuarioScreen(uid: uid, usuario: usuario!)),
+        );
+      } else if (userCredential.user != null && ApiPetition.codeResponse == 204) {
+        Navigator.push(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (context) => UsuarioNuevoScreen()),
         );
       }
     } catch (e) {
       setState(() {
+        // ignore: avoid_print, prefer_interpolation_to_compose_strings
         print("Mensaje"+ e.toString());
         _errorMessage = "Error al iniciar sesión: $e";
       });
@@ -69,7 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _signIn,
+              onPressed: (){              
+              _signIn();
+                
+              },
               child: Text("Iniciar sesión"),
             ),
             if (_errorMessage != null)

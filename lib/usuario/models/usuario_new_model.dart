@@ -1,6 +1,6 @@
 
 
-class UsuarioAdmin {
+class UsuarioNewAdmin {
   final String tipoIdentificacion;
   final String identificacion;
   final String nombres;
@@ -10,7 +10,7 @@ class UsuarioAdmin {
   final String email;
   final String celular;
 
-  UsuarioAdmin({
+  UsuarioNewAdmin({
     required this.tipoIdentificacion,
     required this.identificacion,
     required this.nombres,
@@ -21,9 +21,9 @@ class UsuarioAdmin {
     required this.celular,
   });
 
-  // Método para convertir el JSON a un objeto UsuarioAdmin
-  factory UsuarioAdmin.fromJson(Map<String, dynamic> json) {
-    return UsuarioAdmin(
+  // Método para convertir el JSON a un objeto UsuarioNewAdmin
+  factory UsuarioNewAdmin.fromJson(Map<String, dynamic> json) {
+    return UsuarioNewAdmin(
       tipoIdentificacion: json['tipoIdentificacion'],
       identificacion: json['identificacion'],
       nombres: json['nombres'],
