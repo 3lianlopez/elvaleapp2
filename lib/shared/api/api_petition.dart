@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:elvale/establecimiento/models/establecimiento_info_model.dart';
 import 'package:elvale/establecimiento/models/establecimiento_model.dart';
 import 'package:elvale/security/models/usuario_security_model.dart';
 import 'package:http/http.dart' as http;
@@ -32,8 +33,49 @@ static Future<UsuarioSecurityModel?> fetchUsuarioById(String id) async {
     
     } else if (codeResponse == 204){
       // ignore: avoid_print
-      print("usuario 204");
+      print("response --- " + response.body);
+      return UsuarioSecurityModel();
+
+    } else {
+    
+      // ignore: avoid_print
+      print('Error: No se pudo obtener el usuario. Código de estado: ${response.statusCode}');
+    
       return null;
+    }
+  } catch (e) {
+    
+    // ignore: avoid_print
+    print('Error al hacer la solicitud: $e');
+    
+    return null;
+  }
+}
+
+static Future<EstablecimientoInfoModel?> fetchEstablecimientoById(String id) async {
+  //id = "tiaoS2g1btVwMXJzlrYRHjZ72tV1";
+  final url = Uri.parse('http://192.168.1.109:8085/establecimiento/id/$id');
+  // ignore: avoid_print
+  print(url);
+  try {
+    
+    final response = await http.get(url);
+
+    // ignore: avoid_print
+    print(response.statusCode);
+    codeResponse = response.statusCode;
+    if (response.statusCode == 200) {
+      // Si la respuesta es exitosa, parseamos el cuerpo
+    
+      // ignore: avoid_print
+      print(response.body);
+    
+      return EstablecimientoInfoModel.fromJson(json.decode(response.body));
+    
+    } else if (codeResponse == 204){
+      // ignore: avoid_print
+      print("usuario 204");
+      return EstablecimientoInfoModel();
 
     } else {
     

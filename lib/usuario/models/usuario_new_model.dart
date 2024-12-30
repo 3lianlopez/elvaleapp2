@@ -1,29 +1,34 @@
 
 
+// Modelo para UsuarioAdmin
 class UsuarioNewAdmin {
-  final String tipoIdentificacion;
-  final String identificacion;
-  final String nombres;
-  final String apellidos;
-  final String direccion;
-  final String descripcion;
-  final String email;
-  final String celular;
+  String? uid;
+  String? tipoIdentificacion;
+  String? identificacion;
+  String? nombres;
+  String? apellidos;
+  String? direccion;
+  String? descripcion;
+  String? email;
+  String? celular;
 
+  // Constructor
   UsuarioNewAdmin({
-    required this.tipoIdentificacion,
-    required this.identificacion,
-    required this.nombres,
-    required this.apellidos,
-    required this.direccion,
-    required this.descripcion,
-    required this.email,
-    required this.celular,
+    this.uid,
+    this.tipoIdentificacion,
+    this.identificacion,
+    this.nombres,
+    this.apellidos,
+    this.direccion,
+    this.descripcion,
+    this.email,
+    this.celular,
   });
 
-  // Método para convertir el JSON a un objeto UsuarioNewAdmin
+  // Método fromJson: Convertir un JSON a un objeto UsuarioNewAdmin
   factory UsuarioNewAdmin.fromJson(Map<String, dynamic> json) {
     return UsuarioNewAdmin(
+      uid: json['uid'],
       tipoIdentificacion: json['tipoIdentificacion'],
       identificacion: json['identificacion'],
       nombres: json['nombres'],
@@ -35,9 +40,10 @@ class UsuarioNewAdmin {
     );
   }
 
-  // Método para convertir un objeto UsuarioAdmin a JSON
+  // Método toJson: Convertir un objeto UsuarioAdmin a un JSON
   Map<String, dynamic> toJson() {
     return {
+      'uid': uid,
       'tipoIdentificacion': tipoIdentificacion,
       'identificacion': identificacion,
       'nombres': nombres,
@@ -48,4 +54,20 @@ class UsuarioNewAdmin {
       'celular': celular,
     };
   }
+
+   // Método toMap: Convertir un objeto UsuarioAdmin a un Map
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'tipoIdentificacion': tipoIdentificacion,
+      'identificacion': identificacion,
+      'nombres': nombres,
+      'apellidos': apellidos,
+      'direccion': direccion,
+      'descripcion': descripcion,
+      'email': email,
+      'celular': celular,
+    };
+  }
+
 }

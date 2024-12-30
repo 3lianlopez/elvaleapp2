@@ -1,11 +1,12 @@
+import 'package:elvale/establecimiento/models/establecimiento_info_model.dart';
 import 'package:elvale/security/models/usuario_security_model.dart';
 import 'package:elvale/shared/api/api_petition.dart';
-import 'package:elvale/shared/screens/usuario_google.dart';
 import 'package:elvale/shared/widgets/formulario_multi.dart';
 import 'package:elvale/usuario/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -40,24 +41,27 @@ Future<UserCredential> signInWithGoogle() async {
 
   UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
-  print(userCredential.user!.uid.toString());
 
   uid = userCredential.user?.uid ?? 'NO UID FOUND';
 
+
   UsuarioSecurityModel? usuario = await ApiPetition.fetchUsuarioById(uid);
+  EstablecimientoInfoModel? establecimientoInfoModel = await ApiPetition.fetchEstablecimientoById(usuario!.establecimiento!);
+  String metodo = userCredential.credential!.signInMethod;
   codeResponse = ApiPetition.codeResponse;
   if (userCredential.user != null && codeResponse == 200) {
         // ignore: avoid_print, prefer_interpolation_to_compose_strings//print("entro " + usuario!.nombres.toString());
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => UsuarioScreen(uid: uid, usuario: usuario!)),
+          MaterialPageRoute(builder: (context) => UsuarioScreen(uid: uid, usuario: usuario, establecimientoInfoModel: establecimientoInfoModel!,)),
         );
-      } else if (userCredential.user != null && codeResponse == 204) {
+      } else if (metodo == 'google.com') {
+    
         Navigator.push(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => UsuarioNuevoScreen(codeResponse: codeResponse)),
+          MaterialPageRoute(builder: (context) => UsuarioNuevoScreen(metodo: metodo,codeResponse: codeResponse, inicio: "google", usuario: usuario, uid: uid,)),
         );
       }
 
@@ -68,40 +72,61 @@ Future<UserCredential> signInWithGoogle() async {
 }
 
   Future<void> _signIn() async {
-    try {
-      // Autenticación con correo y contraseña
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+     if (!mounted) return;
+  try {
+    // Autenticación con correo y contraseña
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+     if (!mounted) return;
+
+    uid = userCredential.user?.uid ?? 'NO UID FOUND';
+    print("id de firebase:: " + uid);
+    // Realizar la consulta para obtener el usuario
+    UsuarioSecurityModel? usuario = await ApiPetition.fetchUsuarioById(uid);
+
+    // Si el servicio devuelve null, significa que el usuario no existe
+    if (usuario == null || ApiPetition.codeResponse == 204) {
+      print("Usuario no encontrado, redirigiendo a formulario de registro");
+      
+      // Navegar a la pantalla de registro con los detalles del usuario
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UsuarioNuevoScreen(
+            codeResponse: ApiPetition.codeResponse,
+            inicio: "correo",
+            metodo: "correo",
+            usuario: usuario!, // Aquí puedes pasar cualquier información relevante
+            uid: uid,
+          ),
+        ),
       );
+    } else if (userCredential.user != null && ApiPetition.codeResponse == 200) {
+      // Si el usuario existe y la respuesta del servicio es correcta (200)
+      EstablecimientoInfoModel? establecimientoInfoModel = await ApiPetition.fetchEstablecimientoById(usuario.establecimiento!);
 
-
-      uid = userCredential.user?.uid ?? 'NO UID FOUND';
-      UsuarioSecurityModel? usuario = await ApiPetition.fetchUsuarioById(uid);
-      // ignore: avoid_print, prefer_interpolation_to_compose_strings
-      // Si la autenticación es exitosa, navega a la pantalla principal
-      if (userCredential.user != null && ApiPetition.codeResponse == 200) {
-        // ignore: avoid_print, prefer_interpolation_to_compose_strings//print("entro " + usuario!.nombres.toString());
-        Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(builder: (context) => UsuarioScreen(uid: uid, usuario: usuario!)),
-        );
-      } else if (userCredential.user != null && ApiPetition.codeResponse == 204) {
-        Navigator.push(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(builder: (context) => UsuarioNuevoScreen(codeResponse: ApiPetition.codeResponse,)),
-        );
-      }
-    } catch (e) {
-      setState(() {
-        // ignore: avoid_print, prefer_interpolation_to_compose_strings
-        print("Mensaje"+ e.toString());
-        _errorMessage = "Error al iniciar sesión: $e";
-      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UsuarioScreen(
+            uid: uid,
+            usuario: usuario,
+            establecimientoInfoModel: establecimientoInfoModel!,
+          ),
+        ),
+      );
     }
+  } catch (e) {
+     if (!mounted) return;
+    setState(() {
+      print("Error: $e");
+      _errorMessage = "Error al iniciar sesión: $e";
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

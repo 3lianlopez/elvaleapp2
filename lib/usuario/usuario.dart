@@ -1,3 +1,4 @@
+import 'package:elvale/establecimiento/models/establecimiento_info_model.dart';
 import 'package:elvale/security/models/usuario_security_model.dart';
 import 'package:elvale/security/screens/login.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 class UsuarioScreen extends StatelessWidget {
   final String uid;
   final UsuarioSecurityModel usuario;
+  final EstablecimientoInfoModel establecimientoInfoModel;
 
-  UsuarioScreen({super.key, required this.uid, required this.usuario });
+  UsuarioScreen({super.key, required this.uid, required this.usuario , required this.establecimientoInfoModel});
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _signOut(BuildContext context) async {
@@ -25,7 +27,7 @@ class UsuarioScreen extends StatelessWidget {
     //final usuarioProvider = Provider.of<UsuarioProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(usuario.nombres),
+        title: Text(establecimientoInfoModel.razonSocial!),
         actions: [
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -33,10 +35,18 @@ class UsuarioScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        
-        child: 
-          Text("Bienvenido ${usuario.email}!!!")
+      body: SingleChildScrollView(
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            TextButton(onPressed: (){}, child: Text("GESTIONAR CLIENTES")),
+            TextButton(onPressed: (){}, child: Text("GESTIONAR USUARIOS")),
+            TextButton(onPressed: (){}, child: Text("GESTIONAR FIAO")),
+          ],
+        ),
       ),
     );
   }

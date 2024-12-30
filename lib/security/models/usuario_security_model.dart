@@ -1,35 +1,35 @@
 
 class UsuarioSecurityModel {
-  final String id;
-  final String tipoIdentificacion;
-  final String identificacion;
-  final String nombres;
-  final String apellidos;
-  final String celular;
-  final String direccion;
+  final String? id;
+  final String? tipoIdentificacion;
+  final String? identificacion;
+  final String? nombres;
+  final String? apellidos;
+  final String? celular;
+  final String? direccion;
   final String? telefono;
-  final String email;
-  final String estado;
-  final String fechaGestion;
-  final String establecimiento;
-  final String rol;
-  final String uid;
+  final String? email;
+  final String? estado;
+  final String? fechaGestion;
+  final String? establecimiento;
+  final String? rol;
+  final String? uid;
 
   UsuarioSecurityModel({
-    required this.id,
-    required this.tipoIdentificacion,
-    required this.identificacion,
-    required this.nombres,
-    required this.apellidos,
-    required this.celular,
-    required this.direccion,
+    this.id,
+    this.tipoIdentificacion,
+    this.identificacion,
+    this.nombres,
+    this.apellidos,
+    this.celular,
+    this.direccion,
     this.telefono,
-    required this.email,
-    required this.estado,
-    required this.fechaGestion,
-    required this.establecimiento,
-    required this.rol,
-    required this.uid,
+    this.email,
+    this.estado,
+    this.fechaGestion,
+    this.establecimiento,
+    this.rol,
+    this.uid,
   });
 
   // Método para convertir la respuesta JSON a un objeto Usuario

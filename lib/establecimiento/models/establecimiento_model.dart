@@ -6,7 +6,22 @@ class EstablecimientoModel {
   final String descripcion;
   final String observaciones;
   final String direccion;
-  UsuarioNewAdmin usuarioNewAdmin;  // Aquí tienes una instancia de UsuarioNewAdmin
+  final UsuarioNewAdmin usuarioNewAdmin;
+  
+  // Campos adicionales opcionales
+  final String? id;
+  final String? tipoIdentificacion;
+  final String? identificacion;
+  final String? nombres;
+  final String? apellidos;
+  final String? celular;
+  final String? telefono;
+  final String? email;
+  final String? estado;
+  final DateTime? fechaGestion;
+  final String? establecimiento;
+  final String? rol;
+  final String? uid;
 
   EstablecimientoModel({
     required this.nit,
@@ -14,7 +29,22 @@ class EstablecimientoModel {
     required this.descripcion,
     required this.observaciones,
     required this.direccion,
-    required this.usuarioNewAdmin,  // Pasas la instancia de UsuarioNewAdmin
+    required this.usuarioNewAdmin,
+    
+    // Campos adicionales opcionales
+    this.id,
+    this.tipoIdentificacion,
+    this.identificacion,
+    this.nombres,
+    this.apellidos,
+    this.celular,
+    this.telefono,
+    this.email,
+    this.estado,
+    this.fechaGestion,
+    this.establecimiento,
+    this.rol,
+    this.uid,
   });
 
   // Convertir el objeto Establecimiento a un mapa
@@ -25,7 +55,22 @@ class EstablecimientoModel {
       'descripcion': descripcion,
       'observaciones': observaciones,
       'direccion': direccion,
-      'usuarioAdmin': usuarioNewAdmin
+      'usuarioAdmin': usuarioNewAdmin.toMap(),
+      
+      // Campos adicionales opcionales
+      'id': id,
+      'tipoIdentificacion': tipoIdentificacion,
+      'identificacion': identificacion,
+      'nombres': nombres,
+      'apellidos': apellidos,
+      'celular': celular,
+      'telefono': telefono,
+      'email': email,
+      'estado': estado,
+      'fechaGestion': fechaGestion?.toIso8601String(),
+      'establecimiento': establecimiento,
+      'rol': rol,
+      'uid': uid,
     };
   }
 
@@ -38,6 +83,23 @@ class EstablecimientoModel {
       'observaciones': observaciones,
       'direccion': direccion,
       'usuarioAdmin': usuarioNewAdmin.toJson(), // Aquí accedes a toJson() de la instancia
+
+      // Campos adicionales opcionales
+      'id': id,
+      'tipoIdentificacion': tipoIdentificacion,
+      'identificacion': identificacion,
+      'nombres': nombres,
+      'apellidos': apellidos,
+      'celular': celular,
+      'telefono': telefono,
+      'email': email,
+      'estado': estado,
+      'fechaGestion': fechaGestion?.toIso8601String(),
+      'establecimiento': establecimiento,
+      'rol': rol,
+      'uid': uid,
     };
   }
+
+  
 }
