@@ -39,6 +39,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
+      theme: ThemeData(
+        appBarTheme:
+        AppBarTheme(
+          backgroundColor: Colors.amberAccent, // Fondo del app bar
+          iconTheme: IconThemeData(color: Colors.amber.shade800), // Iconos del app bar
+        ),
+
+        scaffoldBackgroundColor: Colors.white70,
+        
+
+
+        ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: getAplicationRoutes(),
