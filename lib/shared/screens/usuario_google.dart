@@ -4,16 +4,18 @@ import 'package:http/http.dart' as http;
 import 'package:elvale/establecimiento/models/establecimiento_model.dart';
 import 'package:elvale/usuario/models/usuario_new_model.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class UsuarioGoogle extends StatefulWidget {
   final int coderesponse;
-  const UsuarioGoogle({super.key ,required this.coderesponse});
+  const UsuarioGoogle({super.key, required this.coderesponse});
 
   @override
   State<UsuarioGoogle> createState() => _UsuarioGoogleState();
 }
 
 class _UsuarioGoogleState extends State<UsuarioGoogle> {
+  var uuid = Uuid();
 
   // Controladores para los campos del formulario
   final TextEditingController nitController = TextEditingController();
@@ -23,16 +25,21 @@ class _UsuarioGoogleState extends State<UsuarioGoogle> {
   final TextEditingController direccionController = TextEditingController();
 
   // Usuario Admin
-  final TextEditingController tipoIdentificacionController = TextEditingController();
-  final TextEditingController identificacionController = TextEditingController();
+  final TextEditingController tipoIdentificacionController =
+      TextEditingController();
+  final TextEditingController identificacionController =
+      TextEditingController();
   final TextEditingController nombresController = TextEditingController();
   final TextEditingController apellidosController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController celularController = TextEditingController();
 
   Future<void> enviarEstablecimiento() async {
+    String uuiduser = uuid.v4();
+    print("prueba::: $uuiduser");
     // Crear el objeto UsuarioAdmin
     final usuarioNewAdmin = UsuarioNewAdmin(
+      uid: uuiduser,
       tipoIdentificacion: tipoIdentificacionController.text,
       identificacion: identificacionController.text,
       nombres: nombresController.text,
@@ -45,12 +52,12 @@ class _UsuarioGoogleState extends State<UsuarioGoogle> {
 
     // Crear el objeto Establecimiento
     final establecimiento = EstablecimientoModel(
+      id: uuiduser,
       nit: nitController.text,
       razonSocial: razonSocialController.text,
       descripcion: descripcionController.text,
       observaciones: observacionesController.text,
       direccion: direccionController.text,
-      usuarioNewAdmin: usuarioNewAdmin,
     );
 
     // Convertir el establecimiento a JSON
@@ -58,20 +65,43 @@ class _UsuarioGoogleState extends State<UsuarioGoogle> {
 
     // Realizar la petición POST
     final response = await http.post(
-      Uri.parse('http://192.168.1.109:8085/establecimiento'), // Asegúrate de que esta URL es correcta
+      Uri.parse(
+          'http://192.168.1.131:8080/api/establecimientos'), // Asegúrate de que esta URL es correcta
       headers: {
         'Content-Type': 'application/json',
       },
       body: jsonBody,
     );
 
+    final jsonBody2 = jsonEncode(usuarioNewAdmin.toJson());
+
+    final response2 = await http.post(
+      Uri.parse(
+          'http://192.168.1.131:8080/api/usuarios'), // Asegúrate de que esta URL es correcta
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonBody2,
+    );
+
+    if (response2.statusCode == 200) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Usuario creado con éxito')));
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error al crear usuario')));
+    }
 
     if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Establecimiento creado con éxito')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Establecimiento creado con éxito')));
     } else {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al crear establecimiento')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al crear establecimiento')));
     }
   }
 
@@ -89,7 +119,6 @@ class _UsuarioGoogleState extends State<UsuarioGoogle> {
     apellidosController.dispose();
     emailController.dispose();
     celularController.dispose();
-    
 
     nitController.clear();
     razonSocialController.clear();
@@ -108,10 +137,8 @@ class _UsuarioGoogleState extends State<UsuarioGoogle> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child:
-       widget.coderesponse == 204
-       ? Text("Nuevo usuario Google")
-       : Text("Ya tiene establecimiento")
-    );
+        child: widget.coderesponse == 204
+            ? Text("Nuevo usuario Google")
+            : Text("Ya tiene establecimiento"));
   }
 }

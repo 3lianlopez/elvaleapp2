@@ -91,10 +91,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       uid = userCredential.user?.uid ?? 'NO UID FOUND';
-      print("id de firebase:: " + uid);
+      print("id de firebase:: $uid");
       // Realizar la consulta para obtener el usuario
       UsuarioSecurityModel? usuario = await ApiPetition.fetchUsuarioById(uid);
-
+      print(usuario!.toJson());
       // Si el servicio devuelve null, significa que el usuario no existe
       if (usuario == null || ApiPetition.codeResponse == 204) {
         print("Usuario no encontrado, redirigiendo a formulario de registro");
@@ -107,8 +107,8 @@ class _LoginScreenState extends State<LoginScreen> {
               codeResponse: ApiPetition.codeResponse,
               inicio: "correo",
               metodo: "correo",
-              usuario:
-                  usuario!, // Aquí puedes pasar cualquier información relevante
+              usuario: usuario ??
+                  UsuarioSecurityModel(), // Aquí puedes pasar cualquier información relevante
               uid: uid,
             ),
           ),
@@ -150,9 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
             gradient: LinearGradient(
               begin: AlignmentDirectional(2, -4),
               end: AlignmentDirectional(2, 4),
-              colors: <Color>[
-                Colors.orange,
-                Color(0xFF1877F2)],
+              colors: <Color>[Colors.orange, Color(0xFF1877F2)],
             ),
             borderRadius: BorderRadius.all(Radius.circular(30.0)),
             shape: BoxShape.rectangle,
@@ -207,11 +205,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text(
                       "Iniciar sesión",
-                      style: TextStyle(
-                        color: Colors.blue
-                      ),
-                      
-                      ),
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ),
                 ],
               ),

@@ -1,6 +1,6 @@
-
 class UsuarioSecurityModel {
   final String? id;
+  final String? uid;
   final String? tipoIdentificacion;
   final String? identificacion;
   final String? nombres;
@@ -13,10 +13,10 @@ class UsuarioSecurityModel {
   final String? fechaGestion;
   final String? establecimiento;
   final String? rol;
-  final String? uid;
 
   UsuarioSecurityModel({
     this.id,
+    this.uid,
     this.tipoIdentificacion,
     this.identificacion,
     this.nombres,
@@ -29,7 +29,6 @@ class UsuarioSecurityModel {
     this.fechaGestion,
     this.establecimiento,
     this.rol,
-    this.uid,
   });
 
   // Método para convertir la respuesta JSON a un objeto Usuario

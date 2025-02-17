@@ -1,0 +1,2 @@
+C:/Users/elian/Desktop/elvale/android/app/.cxx/Debug/343n2wy1/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/elian/Desktop/elvale/android/app/.cxx/Debug/343n2wy1/armeabi-v7a/CMakeFiles/rebuild_cache.dir

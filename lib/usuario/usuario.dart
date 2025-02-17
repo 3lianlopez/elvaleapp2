@@ -9,7 +9,7 @@ class UsuarioScreen extends StatelessWidget {
   final UsuarioSecurityModel usuario;
   final EstablecimientoInfoModel establecimientoInfoModel;
 
-  UsuarioScreen({super.key, required this.uid, required this.usuario , required this.establecimientoInfoModel});
+  UsuarioScreen( {super.key, required this.uid, required this.usuario , required this.establecimientoInfoModel});
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _signOut(BuildContext context) async {
