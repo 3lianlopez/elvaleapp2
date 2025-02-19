@@ -116,6 +116,24 @@ abstract class ApiPetition {
     }
   }
 
+  static Future<dynamic> buscarClientePorId({
+    required String id,
+  }) async {
+    final url = Uri.parse('http://192.168.1.131:8080/api/clientes/$id');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('No se encontró el cliente');
+      }
+    } catch (e) {
+      throw Exception('Error al buscar el cliente por id: $e');
+    }
+  }
+
   static Future<dynamic> buscarClientePorDocumento({
     required String tipoDocumento,
     required String documento,
@@ -200,6 +218,25 @@ abstract class ApiPetition {
       };
     } catch (e) {
       rethrow;
+    }
+  }
+
+  static Future<List<dynamic>> obtenerCuentasPorEstablecimiento(
+      String idEstablecimiento) async {
+    final url = Uri.parse(
+        'http://192.168.1.131:8080/api/cuentas/establecimiento/$idEstablecimiento');
+
+    try {
+      final response = await http.get(url);
+      print("RESPONSE DE CLIENTES::: " + response.statusCode.toString());
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['data'] as List<dynamic>;
+      } else {
+        throw Exception('Error al obtener las cuentas');
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
     }
   }
 }
