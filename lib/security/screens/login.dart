@@ -3,10 +3,11 @@ import 'package:elvale/security/models/usuario_security_model.dart';
 import 'package:elvale/shared/api/api_petition.dart';
 import 'package:elvale/shared/images/image_assets.dart';
 import 'package:elvale/shared/widgets/formulario_multi.dart';
-import 'package:elvale/usuario/usuario.dart';
+import 'package:elvale/usuario/usuario_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:elvale/shared/database/database_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -81,13 +82,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signIn() async {
+    print("SINGIN");
     if (!mounted) return;
+
     try {
-      // Autenticación con correo y contraseña
+      print("TRY");
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
+      print("TRY USERCREDENTIAL:: " + userCredential.user!.uid.toString());
+
       if (!mounted) return;
 
       uid = userCredential.user?.uid ?? 'NO UID FOUND';
@@ -96,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
       UsuarioSecurityModel? usuario = await ApiPetition.fetchUsuarioById(uid);
       print(usuario!.toJson());
       // Si el servicio devuelve null, significa que el usuario no existe
-      if (usuario == null || ApiPetition.codeResponse == 204) {
+      if (ApiPetition.codeResponse == 404) {
         print("Usuario no encontrado, redirigiendo a formulario de registro");
 
         // Navegar a la pantalla de registro con los detalles del usuario
@@ -119,7 +124,18 @@ class _LoginScreenState extends State<LoginScreen> {
         EstablecimientoInfoModel? establecimientoInfoModel =
             await ApiPetition.fetchEstablecimientoById(
                 usuario.establecimiento!);
-
+// After successful login and fetching user/establishment data
+        await DatabaseHelper().guardarEstablecimientoYUsuario(
+          establecimiento: establecimientoInfoModel!.toJson(),
+          usuario: {
+            'uid': usuario.uid,
+            'establecimiento_id': establecimientoInfoModel.id,
+            'nombres': usuario.nombres,
+            'apellidos': usuario.apellidos,
+            'email': usuario.email,
+            'rol': usuario.rol,
+          },
+        );
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -137,88 +153,158 @@ class _LoginScreenState extends State<LoginScreen> {
         print("Error: $e");
         _errorMessage = "Error al iniciar sesión: $e";
       });
+    } finally {
+      if (mounted) {
+        setState(() {
+          //_isLoading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(title: Text("Inicio de sesión")),
       body: Container(
-        width: MediaQuery.of(context).size.width * 1,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: AlignmentDirectional(2, -4),
-              end: AlignmentDirectional(2, 4),
-              colors: <Color>[Colors.orange, Color(0xFF1877F2)],
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(30.0)),
-            shape: BoxShape.rectangle,
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.black38,
-                  blurRadius: 15.0,
-                  offset: Offset(0.10, 0.10))
-            ]),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: "Correo electrónico",
-                  errorText: _errorMessage != null ? "Correo inválido" : null,
-                ),
-              ),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Contraseña",
-                  errorText:
-                      _errorMessage != null ? "Contraseña inválida" : null,
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      // Acción al tocar el botón
-                      signInWithGoogle();
-                    },
-                    child: Image.asset(
-                      ImageAssets.getImageAssets('icon_google'),
-                      scale: 1.0,
-                    ), // Reemplaza con tu imagen
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _signIn();
-                    },
-                    child: Text(
-                      "Iniciar sesión",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ],
-              ),
-              if (_errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Text(
-                    _errorMessage!,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFF424242).withOpacity(0.9),
+              const Color(0xFF757575).withOpacity(0.8),
             ],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Bienvenido',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF424242),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Correo electrónico',
+                          prefixIcon:
+                              const Icon(Icons.email, color: Color(0xFF757575)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                          errorText:
+                              _errorMessage != null ? 'Correo inválido' : null,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Contraseña',
+                          prefixIcon:
+                              const Icon(Icons.lock, color: Color(0xFF757575)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                          errorText: _errorMessage != null
+                              ? 'Contraseña inválida'
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: _signIn,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF424242),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            'Iniciar sesión',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'O continúa con',
+                        style: TextStyle(
+                          color: Color(0xFF757575),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      OutlinedButton(
+                        onPressed: signInWithGoogle,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 24),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              ImageAssets.getImageAssets('icon_google'),
+                              height: 24,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              'Google',
+                              style: TextStyle(
+                                color: Color(0xFF424242),
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_errorMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

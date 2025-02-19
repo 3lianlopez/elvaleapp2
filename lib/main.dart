@@ -1,15 +1,15 @@
 import 'package:elvale/establecimiento/provider/establacimiento_provider.dart';
 import 'package:elvale/routes/routes.dart';
 import 'package:elvale/security/screens/login.dart';
+import 'package:elvale/shared/database/database_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); 
-
+  await Firebase.initializeApp();
+  await DatabaseHelper().deleteDatabase();
   runApp(const MainApp());
 }
 
@@ -21,10 +21,10 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EstablecimientoProvider()),
-        //ChangeNotifierProvider(create: (_) => UsuarioProvider()) 
+        //ChangeNotifierProvider(create: (_) => UsuarioProvider())
       ],
       child: const MyApp(),
-      );
+    );
   }
 }
 
@@ -39,28 +39,21 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       theme: ThemeData(
-        appBarTheme:
-        AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: Colors.amberAccent, // Fondo del app bar
-          iconTheme: IconThemeData(color: Colors.amber.shade800), // Iconos del app bar
+          iconTheme:
+              IconThemeData(color: Colors.amber.shade800), // Iconos del app bar
         ),
-
         scaffoldBackgroundColor: Colors.white70,
-        
-
-
-        ),
+      ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: getAplicationRoutes(),
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-          builder: (BuildContext context) =>  LoginScreen());
+            builder: (BuildContext context) => LoginScreen());
       },
     );
   }
 }
-
-
